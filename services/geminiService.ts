@@ -1,7 +1,8 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Mission, WeatherData, LocationInfo } from '../types';
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// 주의: 여기서 전역 변수로 초기화하면 process.env가 준비되기 전에 실행되어 앱이 멈출 수 있습니다.
+// const ai = new GoogleGenAI({ apiKey: process.env.API_KEY }); 
 
 export const generateEcoMissions = async (
   weather: WeatherData,
@@ -10,6 +11,9 @@ export const generateEcoMissions = async (
   completedTitles: string[] = []
 ): Promise<{ missions: Mission[], locationContext: string }> => {
   try {
+    // [수정] 함수가 호출되는 시점에는 index.tsx의 설정이 완료된 상태이므로, 여기서 초기화하는 것이 안전합니다.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
     const typeContext = forcedType 
       ? (forcedType === 'indoor' ? "사용자는 현재 '실내'에 있습니다." : "사용자는 현재 '실외'에 있습니다.") 
       : "";
